@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QA_Test_Merlin", "QA_Test_Merlin\QA_Test_Merlin.csproj", "{81614550-6AF4-4EB7-96FE-4490C23EE808}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81614550-6AF4-4EB7-96FE-4490C23EE808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81614550-6AF4-4EB7-96FE-4490C23EE808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81614550-6AF4-4EB7-96FE-4490C23EE808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81614550-6AF4-4EB7-96FE-4490C23EE808}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23DAF3CF-3AE8-4F78-AB46-A273DDAA84B2}
+	EndGlobalSection
+EndGlobal
