@@ -21,6 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="src\Behaviour\Models\" />
+    <Folder Include="src\Test\Data\" />
     <Folder Include="TestResults\" />
   </ItemGroup>
 

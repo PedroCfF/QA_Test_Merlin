@@ -43,6 +43,36 @@ namespace QA_Test_Merlin.Behaviour.Pages
             TestingUtils.WaitForElement(_driver, mainContainer);
         }
 
+        public bool VerifyHomePageIsDisplayed()
+        {
+            try
+            {
+                //TestingUtils.WaitForElement(_driver, mainContainer);
+                TestingUtils.Wait(3000);
+
+                // Check if the home page is displayed
+                bool isHomePageDisplayed = TestingUtils.ElementIsDisplayed(_driver.FindElement(mainContainer));
+
+                Console.WriteLine("here");
+
+                if (isHomePageDisplayed)
+                {
+                    _testReport.Log(Status.Pass, "Home page is still displayed");
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, "Home page is not displayed");
+                }
+
+                return isHomePageDisplayed;
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to locate home page element: {e.Message}");
+                return false;
+            }
+        }
+
         public void PerformSearchAndClosePopUps(string searchTerm)
         {
             ClosePopUp(CookiesPanelLocator, AcceptCookiesButtonLocator);
@@ -57,10 +87,20 @@ namespace QA_Test_Merlin.Behaviour.Pages
 
         private void ClosePopUp(By panelLocator, By closeButtonPopUpLocator)
         {
-            TestingUtils.WaitForElement(_driver, panelLocator);
-
-            if (TestingUtils.ElementIsDisplayed(_driver.FindElement(panelLocator)))
-                _driver.FindElement(closeButtonPopUpLocator).Click();
+            try
+            {
+                // Check if the pop-up or panel is displayed before attempting to interact with it
+                if (TestingUtils.ElementExists(_driver, panelLocator))
+                {
+                    TestingUtils.WaitForElement(_driver, panelLocator);
+                    // Click the close button of the pop-up
+                    _driver.FindElement(closeButtonPopUpLocator).Click();
+                }
+            }
+            catch (NoSuchElementException)
+            {
+                _testReport.Log(Status.Info, "Pop-up or panel was not displayed");
+            }
         }
     }
 }

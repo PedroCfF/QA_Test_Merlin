@@ -1,7 +1,5 @@
 ﻿using QA_Test_Merlin.Behaviour;
 using QA_Test_Merlin.Behaviour.Pages;
-using QA_Test_Merlin.Models;
-using QA_Test_Merlin.Test.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +18,6 @@ namespace QA_Test_Merlin.Test.Features
         {
             _homePage = _behaviourManager.HomePage;
             _searchResultPage = _behaviourManager.SearchResultPage;
-
-            // Perform the necessary setup steps for the test scenario, e.g., login to the website
-            // ...
         }
 
         [Test]
@@ -45,28 +40,21 @@ namespace QA_Test_Merlin.Test.Features
             _homePage.PerformSearchAndClosePopUps("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
             // Verify that an appropriate error message or notification is displayed
-            Assert.IsTrue(_searchResultPage.VerifyErrorMessageDisplayed("Invalid search term"), "Error message is not displayed");
+            Assert.IsTrue(_searchResultPage.VerifyErrorMessageDisplayed(), "Error message is not displayed");
 
             // Verify that no search results are shown
             Assert.IsTrue(_searchResultPage.VerifyNoSearchResultsDisplayed(), "Search results are displayed");
         }
 
-        //[Test]
-        //public void EmptySearchQuery_EmptyTerm_DisplaysErrorMessage()
-        //{
-        //    // Navigate to the search feature of the website
-        //    _homePage.NavigateToSearch();
+        [Test]
+        public void EmptySearchQuery_EmptyTerm_HasNoEffect()
+        {
+            _homePage.NavigateToHomePage();
+            _homePage.PerformSearchAndClosePopUps(" ");
 
-        //    // Leave the search field empty and press the "Search" button
-        //    _homePage.ClearSearchTerm();
-        //    _homePage.ClickSearchButton();
-
-        //    // Verify that an appropriate error message or notification is displayed
-        //    Assert.IsTrue(_searchResultPage.VerifyErrorMessageDisplayed("Please enter a search term"), "Error message is not displayed");
-
-        //    // Verify that no search results are shown
-        //    Assert.IsTrue(_searchResultPage.VerifyNoSearchResultsDisplayed(), "Search results are displayed");
-        //}
+            // Verify that an appropriate error message or notification is displayed
+            Assert.IsTrue(_homePage.VerifyHomePageIsDisplayed(), "Empty search had unexpected effects");
+        }
 
         //[Test]
         //public void SearchResultSorting_ValidTerm_SortsResultsByCriteria()

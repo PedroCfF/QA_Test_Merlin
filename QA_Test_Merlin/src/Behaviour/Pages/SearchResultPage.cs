@@ -3,7 +3,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using QA_Test_Merlin.Test;
 using QA_Test_Merlin.Behaviour.Utils;
-using QA_Test_Merlin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,7 +83,7 @@ namespace QA_Test_Merlin.Behaviour.Pages
             }
         }
 
-        public bool VerifyErrorMessageDisplayed(string errorMessage)
+        public bool VerifyErrorMessageDisplayed()
         {
             try
             {
@@ -134,6 +133,22 @@ namespace QA_Test_Merlin.Behaviour.Pages
                 return false;
             }
         }
+        
+
+        //public void PressEnterInSearchInput()
+        //{
+        //    try
+        //    {
+        //        IWebElement searchInput = _driver.FindElement(SearchInputLocator);
+        //        searchInput.SendKeys(Keys.Enter);
+
+        //        _testReport.Log(Status.Info, "Pressed Enter in the search input");
+        //    }
+        //    catch (NoSuchElementException e)
+        //    {
+        //        _testReport.Log(Status.Fail, $"Failed to locate search input: {e.Message}");
+        //    }
+        //}
 
         //public void SortSearchResultsByCriteria(string sortCriteria)
         //{

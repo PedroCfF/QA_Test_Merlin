@@ -44,5 +44,20 @@ namespace QA_Test_Merlin.Behaviour.Utils
                 return false;
             }
         }
+
+        public static bool ElementExists(IWebDriver driver, By locator, int timeoutInSeconds = 10)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
+                wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+                wait.Until(d => d.FindElements(locator).Count > 0);
+                return true;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
     }
 }
