@@ -16,17 +16,20 @@ namespace QA_Test_Merlin.Behaviour.Pages
         private readonly IWebDriver _driver;
         private readonly ExtentTest _testReport;
 
+        private string url = "https://www.adidas.es/";
+
         // Locators for elements on the home page
-        private By mainContainer => By.Id("theme-app");
+        private By mainContainer => By.Id("main-content");
 
-        private By searchLinkLocator = By.CssSelector($"a[href='https://www.zara.com/es/es/search']");
-        private By SearchInputLocator => By.Id("search-products-form-combo-input");
+        private By SearchInputLocator = By.CssSelector("[data-auto-id='searchinput-desktop']");
 
-        private By CookiesPanel = By.Id("onetrust-group-container");
+        private By CookiesPanelLocator = By.Id("gl-modal__main-content-cookie-consent-modal");
 
-        private By CookiesButton = By.Id("onetrust-accept-btn-handler");
+        private By AcceptCookiesButtonLocator = By.Id("glass-gdpr-default-consent-accept-button");
 
-        private string url = "https://www.zara.com/es/";
+        private By NewsletterSubscriptionPopUpLocator = By.CssSelector("[data-auto-id='landing-screen']");
+
+        private By NewsletterSubscriptionPopUpCloseButtonLocator = By.CssSelector("button[name='account-portal-close']");
 
         public HomePage(IWebDriver driver, ExtentTest testReport)
         {
@@ -40,13 +43,24 @@ namespace QA_Test_Merlin.Behaviour.Pages
             TestingUtils.WaitForElement(_driver, mainContainer);
         }
 
-        public void PerformSearch(string searchTerm)
+        public void PerformSearchAndClosePopUps(string searchTerm)
         {
-            if (TestingUtils.ElementIsDisplayed(_driver.FindElement(CookiesPanel))) _driver.FindElement(CookiesButton).Click();
-            _driver.FindElement(searchLinkLocator).Click();
+            ClosePopUp(CookiesPanelLocator, AcceptCookiesButtonLocator);
+
+            _driver.FindElement(SearchInputLocator).Click();
             TestingUtils.WaitForElement(_driver, SearchInputLocator);
             _driver.FindElement(SearchInputLocator).SendKeys(searchTerm);
             _driver.FindElement(SearchInputLocator).SendKeys(Keys.Enter);
+
+            ClosePopUp(NewsletterSubscriptionPopUpLocator, NewsletterSubscriptionPopUpCloseButtonLocator);
+        }
+
+        private void ClosePopUp(By panelLocator, By closeButtonPopUpLocator)
+        {
+            TestingUtils.WaitForElement(_driver, panelLocator);
+
+            if (TestingUtils.ElementIsDisplayed(_driver.FindElement(panelLocator)))
+                _driver.FindElement(closeButtonPopUpLocator).Click();
         }
     }
 }

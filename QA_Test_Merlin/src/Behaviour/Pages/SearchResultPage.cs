@@ -17,10 +17,11 @@ namespace QA_Test_Merlin.Behaviour.Pages
         private readonly IWebDriver _driver;
         private readonly ExtentTest _testReport;
 
-        private By ResultsContainerLocator => By.ClassName("search-products-view__search-results");
-        private By SearchResultItemLocator => By.ClassName("product-grid-product");
-        private By SearchResultItemDescriptionLocator => By.ClassName("product-grid-product__info-wrapper");
-        private By ErrorMessageLocator => By.CssSelector(".error-message");
+        private By ResultsContainerLocator => By.Id("main-content");
+
+        private By SearchResultsContainerLocator = By.CssSelector("[data-auto-id='product_container']");
+        private By SearchResultItemDescriptionLocator => By.CssSelector("[data-auto-id='product-card-title']");
+        private By ErrorMessageLocator => By.XPath($"//h4[contains(text(), '¡VAYA! NO HAY RESULTADOS')]");
         private By PaginationControlsLocator => By.ClassName("pagination-controls");
 
 
@@ -35,7 +36,7 @@ namespace QA_Test_Merlin.Behaviour.Pages
             try
             {
                 TestingUtils.WaitForElement(_driver, ResultsContainerLocator);
-                bool resultsDisplayed = TestingUtils.ElementIsDisplayed(_driver.FindElement(SearchResultItemLocator));
+                bool resultsDisplayed = TestingUtils.ElementIsDisplayed(_driver.FindElement(SearchResultsContainerLocator));
 
                 if (resultsDisplayed)
                 {
@@ -83,55 +84,56 @@ namespace QA_Test_Merlin.Behaviour.Pages
             }
         }
 
-        //public bool VerifyErrorMessageDisplayed(string errorMessage)
-        //{
-        //    try
-        //    {
-        //        // Check if the error message is displayed
-        //        bool isDisplayed = TestingUtils.IsElementVisible(_driver.FindElement(ErrorMessageLocator));
+        public bool VerifyErrorMessageDisplayed(string errorMessage)
+        {
+            try
+            {
+                TestingUtils.WaitForElement(_driver, ResultsContainerLocator);
+                // Check if the error message is displayed
+                bool isDisplayed = TestingUtils.ElementIsDisplayed(_driver.FindElement(ErrorMessageLocator));
 
-        //        if (isDisplayed)
-        //        {
-        //            _testReport.Log(Status.Pass, "Error message is displayed");
-        //        }
-        //        else
-        //        {
-        //            _testReport.Log(Status.Fail, "Error message is not displayed");
-        //        }
+                if (isDisplayed)
+                {
+                    _testReport.Log(Status.Pass, "Error message is displayed");
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, "Error message is not displayed");
+                }
 
-        //        return isDisplayed;
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to verify error message: {e.Message}");
-        //        return false;
-        //    }
-        //}
+                return isDisplayed;
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to verify error message: {e.Message}");
+                return false;
+            }
+        }
 
-        //public bool VerifyNoSearchResultsDisplayed()
-        //{
-        //    try
-        //    {
-        //        // Check if no search results are shown
-        //        bool noResultsDisplayed = !_driver.FindElements(SearchResultItemLocator).Any();
+        public bool VerifyNoSearchResultsDisplayed()
+        {
+            try
+            {
+                // Check if no search results are shown
+                bool noResultsDisplayed = !_driver.FindElements(SearchResultsContainerLocator).Any();
 
-        //        if (noResultsDisplayed)
-        //        {
-        //            _testReport.Log(Status.Pass, "No search results are displayed");
-        //        }
-        //        else
-        //        {
-        //            _testReport.Log(Status.Fail, "Search results are displayed");
-        //        }
+                if (noResultsDisplayed)
+                {
+                    _testReport.Log(Status.Pass, "No search results are displayed");
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, "Search results are displayed");
+                }
 
-        //        return noResultsDisplayed;
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to verify search results: {e.Message}");
-        //        return false;
-        //    }
-        //}
+                return noResultsDisplayed;
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to verify search results: {e.Message}");
+                return false;
+            }
+        }
 
         //public void SortSearchResultsByCriteria(string sortCriteria)
         //{
