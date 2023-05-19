@@ -23,6 +23,10 @@ namespace QA_Test_Merlin.Behaviour.Pages
         private By ErrorMessageLocator => By.XPath($"//h4[contains(text(), '¡VAYA! NO HAY RESULTADOS')]");
         private By PaginationControlsLocator => By.ClassName("pagination-controls");
 
+        private By SortingDropdownLocator = By.XPath("//div[@data-auto-id='dropdown-container']");
+
+        private By SalePriceLocator = By.XPath("//div[@class= 'gl-price-item gl-price-item--sale notranslate']");
+
 
         public SearchResultPage(IWebDriver driver, ExtentTest testReport)
         {
@@ -133,64 +137,56 @@ namespace QA_Test_Merlin.Behaviour.Pages
                 return false;
             }
         }
-        
 
-        //public void PressEnterInSearchInput()
-        //{
-        //    try
-        //    {
-        //        IWebElement searchInput = _driver.FindElement(SearchInputLocator);
-        //        searchInput.SendKeys(Keys.Enter);
+        public void SortSearchResultsByCriteria(int sortCriteriaIndexPosition)
+        {
+            try
+            {
+                _driver.FindElement(SortingDropdownLocator).Click();
+                _driver.FindElement(By.XPath($"(//div[@data-auto-id='item-wrapper']//button)[{sortCriteriaIndexPosition}]")).Click();
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to sort search results: {e.Message}");
+            }
+        }
 
-        //        _testReport.Log(Status.Info, "Pressed Enter in the search input");
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to locate search input: {e.Message}");
-        //    }
-        //}
+        public bool VerifySearchResultsSortedByCriteria()
+        {
+            try
+            {
+                TestingUtils.WaitForElement(_driver, SalePriceLocator);
 
-        //public void SortSearchResultsByCriteria(string sortCriteria)
-        //{
-        //    try
-        //    {
-        //        // Implement the behavior to sort the search results by relevant criteria
-        //        // Locate the sorting option element and click it based on the provided sort criteria
+                IReadOnlyList<IWebElement> searchResultItemPrices = _driver.FindElements(SalePriceLocator);
 
-        //        // Example: Click the sorting option based on sortCriteria
-        //        By sortingOptionLocator = By.XPath($"//select[@id='sortingOption']/option[text()='{sortCriteria}']");
-        //        IWebElement sortingOption = _driver.FindElement(sortingOptionLocator);
-        //        sortingOption.Click();
+                List<double> processedPrices = new List<double>();
 
-        //        // Perform additional actions if necessary
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to sort search results: {e.Message}");
-        //    }
-        //}
+                foreach (IWebElement searchResultItemPrice in searchResultItemPrices)
+                {
+                    string priceText = searchResultItemPrice.Text.Replace("€", "").Trim();
+                    double price = double.Parse(priceText);
+                    processedPrices.Add(price);
+                }
 
-        //public bool VerifySearchResultsSortedByCriteria(string sortCriteria)
-        //{
-        //    try
-        //    {
-        //        // Implement the verification logic to check if the search results are rearranged according to the selected sorting option
+                bool isSorted = processedPrices.SequenceEqual(processedPrices.OrderBy(p => p));
 
-        //        // Example: Check if the search results are sorted based on sortCriteria
-        //        // Get the list of search result items
-        //        IReadOnlyList<IWebElement> searchResultItems = _driver.FindElements(SearchResultItemLocator);
-
-        //        // Implement the verification logic based on the provided sortCriteria
-
-        //        _testReport.Log(Status.Pass, "Search results are sorted by the selected criteria");
-        //        return true;
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to verify search results sorting: {e.Message}");
-        //        return false;
-        //    }
-        //}
+                if (isSorted)
+                {
+                    _testReport.Log(Status.Pass, "Search results are sorted by the selected criteria");
+                    return true;
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, "Search results are not sorted by the selected criteria");
+                    return false;
+                }
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to verify search results sorting: {e.Message}");
+                return false;
+            }
+        }
 
         //public bool VerifyPaginationControlsAvailable()
         //{

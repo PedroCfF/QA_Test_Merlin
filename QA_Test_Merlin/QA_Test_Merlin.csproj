@@ -9,6 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\Behaviour\Models\**" />
+    <Compile Remove="src\Test\Data\**" />
+    <EmbeddedResource Remove="src\Behaviour\Models\**" />
+    <EmbeddedResource Remove="src\Test\Data\**" />
+    <None Remove="src\Behaviour\Models\**" />
+    <None Remove="src\Test\Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
     <PackageReference Include="ExtentReports" Version="4.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
@@ -21,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\Behaviour\Models\" />
-    <Folder Include="src\Test\Data\" />
     <Folder Include="TestResults\" />
   </ItemGroup>
 

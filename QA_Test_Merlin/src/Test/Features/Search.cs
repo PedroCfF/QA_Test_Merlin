@@ -24,13 +24,13 @@ namespace QA_Test_Merlin.Test.Features
         public void ValidSearchQuery_ValidTerm_ReturnsSearchResults()
         {
             _homePage.NavigateToHomePage();
-            _homePage.PerformSearchAndClosePopUps("Camiseta");
+            _homePage.PerformSearchAndClosePopUps("Campus 00s");
 
             // Verify that the search results page is displayed
             Assert.IsTrue(_searchResultPage.VerifySearchResultsDisplayed(), "Search results page is not displayed");
 
             // Verify that the search results contain the expected items related to the search term
-            Assert.IsTrue(_searchResultPage.VerifySearchResultsContainItems("Camiseta"), "Search results do not contain the expected items");
+            Assert.IsTrue(_searchResultPage.VerifySearchResultsContainItems("Campus 00s"), "Search results do not contain the expected items");
         }
 
         [Test]
@@ -56,22 +56,18 @@ namespace QA_Test_Merlin.Test.Features
             Assert.IsTrue(_homePage.VerifyHomePageIsDisplayed(), "Empty search had unexpected effects");
         }
 
-        //[Test]
-        //public void SearchResultSorting_ValidTerm_SortsResultsByCriteria()
-        //{
-        //    // Navigate to the search feature of the website
-        //    _homePage.NavigateToSearch();
+        [Test]
+        public void SearchResultSorting_ValidTerm_SortsResultsByCriteria()
+        {
+            _homePage.NavigateToHomePage();
+            _homePage.PerformSearchAndClosePopUps("Camiseta");
 
-        //    // Enter a valid search term and press the "Search" button
-        //    _homePage.EnterSearchTerm("valid term");
-        //    _homePage.ClickSearchButton();
+            // Perform a search result sorting by relevant criteria
+            _searchResultPage.SortSearchResultsByCriteria(1);
 
-        //    // Perform a search result sorting by relevant criteria
-        //    _searchResultPage.SortSearchResultsByCriteria("price");
-
-        //    // Verify that the search results are sorted by the selected criteria
-        //    Assert.IsTrue(_searchResultPage.VerifySearchResultsSortedByCriteria("price"), "Search results are not sorted by price");
-        //}
+            //Verify that the search results are sorted by the selected criteria
+            Assert.IsTrue(_searchResultPage.VerifySearchResultsSortedByCriteria(), "Search results are not sorted by price");
+        }
 
         //[Test]
         //public void Pagination_MultiplePages_ReturnsCorrectResults()
@@ -94,6 +90,6 @@ namespace QA_Test_Merlin.Test.Features
         //        // Verify that the correct results are displayed for the given page number
         //        Assert.IsTrue(_searchResultPage.VerifyCorrectResultsDisplayed(pageNumber), $"Correct results are not displayed for page {pageNumber}");
         //    }
-        //}
+        //}  
     }
 }

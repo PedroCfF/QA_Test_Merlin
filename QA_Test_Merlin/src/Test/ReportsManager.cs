@@ -65,7 +65,6 @@ namespace QA_Test_Merlin.Test
             }
         }
 
-        //candidate to be stored into a utils class
         private static string GetBaseDirectory()
         {
             string? baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
