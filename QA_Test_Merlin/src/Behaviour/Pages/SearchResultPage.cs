@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace QA_Test_Merlin.Behaviour.Pages
 {
@@ -26,6 +27,11 @@ namespace QA_Test_Merlin.Behaviour.Pages
         private By SortingDropdownLocator = By.XPath("//div[@data-auto-id='dropdown-container']");
 
         private By SalePriceLocator = By.XPath("//div[@class= 'gl-price-item gl-price-item--sale notranslate']");
+
+        private By PaginationContainerLocator = By.CssSelector("[data-auto-id='plp-pagination']");
+
+        private By PaginationRightButtonLocator = By.CssSelector("[data-auto-id='pagination-right-button']");
+
 
 
         public SearchResultPage(IWebDriver driver, ExtentTest testReport)
@@ -92,6 +98,7 @@ namespace QA_Test_Merlin.Behaviour.Pages
             try
             {
                 TestingUtils.WaitForElement(_driver, ResultsContainerLocator);
+
                 // Check if the error message is displayed
                 bool isDisplayed = TestingUtils.ElementIsDisplayed(_driver.FindElement(ErrorMessageLocator));
 
@@ -117,6 +124,8 @@ namespace QA_Test_Merlin.Behaviour.Pages
         {
             try
             {
+                TestingUtils.WaitForElement(_driver, ResultsContainerLocator);
+
                 // Check if no search results are shown
                 bool noResultsDisplayed = !_driver.FindElements(SearchResultsContainerLocator).Any();
 
@@ -188,67 +197,95 @@ namespace QA_Test_Merlin.Behaviour.Pages
             }
         }
 
-        //public bool VerifyPaginationControlsAvailable()
-        //{
-        //    try
-        //    {
-        //        // Check if the pagination controls are available
-        //        bool controlsAvailable = TestingUtils.IsElementVisible(_driver.FindElement(PaginationControlsLocator));
+        public bool VerifyPaginationControlsAvailable()
+        {
+            try
+            {
+                TestingUtils.WaitForElement(_driver, ResultsContainerLocator);
 
-        //        if (controlsAvailable)
-        //        {
-        //            _testReport.Log(Status.Pass, "Pagination controls are available");
-        //        }
-        //        else
-        //        {
-        //            _testReport.Log(Status.Fail, "Pagination controls are not available");
-        //        }
+                // Check if the pagination controls are available
+                bool controlsAvailable = TestingUtils.ElementIsDisplayed(_driver.FindElement(PaginationContainerLocator));
 
-        //        return controlsAvailable;
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to verify pagination controls: {e.Message}");
-        //        return false;
-        //    }
-        //}
+                if (controlsAvailable)
+                {
+                    _testReport.Log(Status.Pass, "Pagination controls are available");
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, "Pagination controls are not available");
+                }
 
-        //public void NavigateToPage(int pageNumber)
-        //{
-        //    try
-        //    {
-        //        // Implement the behavior to navigate to a specific page of the search results
-        //        // Locate the pagination control element corresponding to the provided page number and click it
+                return controlsAvailable;
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to verify pagination controls: {e.Message}");
+                return false;
+            }
+        }
 
-        //        // Example: Click the pagination control for the specified pageNumber
-        //        By paginationControlLocator = By.XPath($"//div[@class='pagination-controls']//a[text()='{pageNumber}']");
-        //        IWebElement paginationControl = _driver.FindElement(paginationControlLocator);
-        //        paginationControl.Click();
+        public bool VerifyCorrectResultsDisplayed(int pageNumber)
+        {
+            try
+            {
+                TestingUtils.WaitForElement(_driver, PaginationRightButtonLocator);
+                _driver.FindElement(PaginationRightButtonLocator).Click();
 
-        //        // Perform additional actions if necessary
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to navigate to page {pageNumber}: {e.Message}");
-        //    }
-        //}
+                TestingUtils.WaitForElement(_driver, ResultsContainerLocator);
 
-        //public bool VerifyCorrectResultsDisplayed(int pageNumber)
-        //{
-        //    try
-        //    {
-        //        // Implement the verification logic to check if the correct results are displayed for the given page number
+                bool resultsDisplayed = TestingUtils.ElementIsDisplayed(_driver.FindElement(SearchResultsContainerLocator));
 
-        //        // Example: Check if the correct results are displayed for the specified pageNumber
+                if (resultsDisplayed)
+                {
+                    _testReport.Log(Status.Pass, "Search results are displayed");
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, "Search results are not displayed");
+                }
 
-        //        _testReport.Log(Status.Pass, $"Correct results are displayed for page {pageNumber}");
-        //        return true;
-        //    }
-        //    catch (NoSuchElementException e)
-        //    {
-        //        _testReport.Log(Status.Fail, $"Failed to verify search results on page {pageNumber}: {e.Message}");
-        //        return false;
-        //    }
-        //}
+                return resultsDisplayed;
+            }
+            catch (NoSuchElementException e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to verify search results on page {pageNumber}: {e.Message}");
+                return false;
+            }
+        }
+
+        public bool VerifyUrl(int pageNumber)
+        {
+            try
+            {
+                string currentUrl = _driver.Url;
+                string queryString = new Uri(currentUrl).Query;
+                var queryDictionary = HttpUtility.ParseQueryString(queryString);
+
+                int currentPageStart = Convert.ToInt32(queryDictionary["start"]);
+                int expectedPageStart = 48*pageNumber;
+
+                Boolean returnValue;
+
+                if (currentPageStart == expectedPageStart)
+                {
+                    _testReport.Log(Status.Pass, $"Next page URL is correct. start={expectedPageStart}");
+                    returnValue = true;
+                }
+                else
+                {
+                    _testReport.Log(Status.Fail, $"Next page URL is incorrect. Actual start={currentPageStart}");
+                    returnValue = false;
+                }
+
+                return returnValue;
+
+            }
+            catch (Exception e)
+            {
+                _testReport.Log(Status.Fail, $"Failed to verify pagination increment: {e.Message}");
+                return false;
+            }
+        }
+
     }
 }

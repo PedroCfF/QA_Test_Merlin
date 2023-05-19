@@ -52,7 +52,7 @@ namespace QA_Test_Merlin.Test.Features
             _homePage.NavigateToHomePage();
             _homePage.PerformSearchAndClosePopUps(" ");
 
-            // Verify that an appropriate error message or notification is displayed
+            // Verify that nothing happens when query is empty
             Assert.IsTrue(_homePage.VerifyHomePageIsDisplayed(), "Empty search had unexpected effects");
         }
 
@@ -69,27 +69,22 @@ namespace QA_Test_Merlin.Test.Features
             Assert.IsTrue(_searchResultPage.VerifySearchResultsSortedByCriteria(), "Search results are not sorted by price");
         }
 
-        //[Test]
-        //public void Pagination_MultiplePages_ReturnsCorrectResults()
-        //{
-        //    // Navigate to the search feature of the website
-        //    _homePage.NavigateToSearch();
+        [Test]
+        public void Pagination_MultiplePages_ReturnsCorrectResults()
+        {
+            _homePage.NavigateToHomePage();
+            _homePage.PerformSearchAndClosePopUps("Camiseta");
 
-        //    // Enter a search term that returns multiple pages of results
-        //    _homePage.EnterSearchTerm("multiple pages");
-        //    _homePage.ClickSearchButton();
-        //    // Verify that the pagination controls are available
-        //    Assert.IsTrue(_searchResultPage.VerifyPaginationControlsAvailable(), "Pagination controls are not available");
+            // Verify that the pagination controls are available
+            Assert.IsTrue(_searchResultPage.VerifyPaginationControlsAvailable(), "Pagination controls are not available");
 
-        //    // Perform navigation through the pages and ensure the correct results are displayed
-        //    for (int pageNumber = 1; pageNumber <= 3; pageNumber++)
-        //    {
-        //        // Navigate to the specified page
-        //        _searchResultPage.NavigateToPage(pageNumber);
-
-        //        // Verify that the correct results are displayed for the given page number
-        //        Assert.IsTrue(_searchResultPage.VerifyCorrectResultsDisplayed(pageNumber), $"Correct results are not displayed for page {pageNumber}");
-        //    }
-        //}  
+            // Perform navigation through the pages and ensure the correct results are displayed
+            for (int pageNumber = 1; pageNumber <= 3; pageNumber++)
+            {
+                // Navigate and Verify that the correct results are displayed for the given page number and the search parameter in the url is properly updated
+                Assert.IsTrue(_searchResultPage.VerifyCorrectResultsDisplayed(pageNumber), $"Correct results are not displayed for page {pageNumber}");
+                Assert.IsTrue(_searchResultPage.VerifyUrl(pageNumber), $"Url is not properly displayed {pageNumber}");
+            }
+        }
     }
 }
