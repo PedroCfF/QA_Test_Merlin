@@ -45,7 +45,7 @@ To use this test automation framework, follow these steps:
      ```
    - Run single test
      ```shell
-     dotnet test --filter FullyQualifiedName~ValidSearchQuery_ValidTerm_ReturnsSearchResults
+     dotnet test --filter ValidSearchQuery_ValidTerm_ReturnsSearchResults
      ```
 
 6. The test execution results will be saved in the `TestResults` folder as an HTML report. You can open it with your favourite browser to properly see whe results in a well designed webpage.
